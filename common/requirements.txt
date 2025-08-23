@@ -1,0 +1,6 @@
+fastapi
+sqlalchemy
+sqlmodel
+pydantic
+alembic
+uvicorn
