@@ -4,7 +4,7 @@ from services import SongResponseSchema
 
 
 class AlbumResponseSchema(SQLModel):
-    id: int
+    id: Optional[int]
     title: str = Field(max_length=64)
     year: int
     songs: List[SongResponseSchema]
