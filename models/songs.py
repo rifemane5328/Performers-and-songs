@@ -1,11 +1,11 @@
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import Column, String, Integer
-from typing import List, Optional
+from sqlalchemy import Column, String
+from typing import Optional
 
 from models import Performer, Album
 
 
-class Song(SQLModel):
+class Song(SQLModel, table=True):
     __tablename__ = "songs"
     id: int = Field(primary_key=True)
     title: str = Field(sa_column=Column(String(64), nullable=False))
