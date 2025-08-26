@@ -1,5 +1,5 @@
 from typing import List
-from sqlmodel import select
+from sqlmodel import select, delete
 from sqlalchemy.orm import selectinload
 
 from dependecies.session import AsyncSessionDep
@@ -52,3 +52,11 @@ class PerformerQueryBuilder:
         if not performer:
             raise PerformerNotFound
         return performer
+
+    @staticmethod
+    async def delete_performer_by_id(session: AsyncSessionDep, performer_id: int) -> None:
+        await PerformerQueryBuilder.get_performer_by_id(session, performer_id)
+
+        query = delete(Performer).where(Performer.id == performer_id)
+        await session.execute(query)
+        await session.commit()

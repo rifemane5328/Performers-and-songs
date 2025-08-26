@@ -43,3 +43,13 @@ async def get_performer_by_id(session: AsyncSessionDep, performer_id: int) -> Pe
         return performer
     except PerformerNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@performers_router.delete('/performer_by_id/{id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_performer_by_id(session: AsyncSessionDep, performer_id: int) -> None:
+    """This deletes a performer that have an id, defined by user"""
+    try:
+        await PerformerQueryBuilder.delete_performer_by_id(session, performer_id)
+        return "A performer was successfully deleted"
+    except PerformerNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

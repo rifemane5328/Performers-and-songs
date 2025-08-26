@@ -36,6 +36,7 @@ async def create_song(session: AsyncSessionDep, data: SongCreateSchema) -> SongR
 
 @songs_router.get('/get_song_by_id/{id}', response_model=SongResponseSchema)
 async def get_song_by_id(session: AsyncSessionDep, song_id: int) -> SongResponseSchema:
+    """This returns a schema of song that have an id, defined by user"""
     try:
         song = await SongQueryBuilder.get_song_by_id(session, song_id)
         return song
