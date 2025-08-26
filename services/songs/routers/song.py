@@ -34,11 +34,20 @@ async def create_song(session: AsyncSessionDep, data: SongCreateSchema) -> SongR
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
 
 
-@songs_router.get('/get_song_by_id/{id}', response_model=SongResponseSchema)
+@songs_router.get('/song_by_id/{id}', response_model=SongResponseSchema)
 async def get_song_by_id(session: AsyncSessionDep, song_id: int) -> SongResponseSchema:
     """This returns a schema of song that have an id, defined by user"""
     try:
         song = await SongQueryBuilder.get_song_by_id(session, song_id)
         return song
+    except SongNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@songs_router.delete('/song_by_id', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_song_by_id(session: AsyncSessionDep, song_id: int) -> None:
+    """This deletes a song that have an id, defined by user"""
+    try:
+        await SongQueryBuilder.delete_song_by_id(session, song_id)
     except SongNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

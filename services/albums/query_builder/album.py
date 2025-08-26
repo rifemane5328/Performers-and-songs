@@ -1,5 +1,5 @@
 from typing import List
-from sqlmodel import select
+from sqlmodel import select, delete
 from sqlalchemy.orm import selectinload
 
 from dependecies.session import AsyncSessionDep
@@ -42,3 +42,11 @@ class AlbumQueryBuilder:
         if not album:
             raise AlbumNotFound
         return album
+
+    @staticmethod
+    async def delete_album_by_id(session: AsyncSessionDep, album_id: int) -> None:
+        await AlbumQueryBuilder.get_album_by_id(session, album_id)
+
+        query = delete(Album).where(Album.id == album_id)
+        await session.execute(query)
+        await session.commit()

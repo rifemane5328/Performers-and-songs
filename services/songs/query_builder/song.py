@@ -1,5 +1,5 @@
 from typing import List
-from sqlmodel import select
+from sqlmodel import select, delete
 
 from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
@@ -40,3 +40,11 @@ class SongQueryBuilder:
         if not song:
             raise SongNotFound
         return song
+
+    @staticmethod
+    async def delete_song_by_id(session: AsyncSessionDep, song_id: int) -> None:
+        await SongQueryBuilder.get_song_by_id(session, song_id)
+
+        query = delete(Song).where(Song.id == song_id)
+        await session.execute(query)
+        await session.commit()

@@ -42,3 +42,12 @@ async def get_album_by_id(session: AsyncSessionDep, album_id: int) -> AlbumRespo
         return album
     except AlbumNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@albums_router.delete('/album_by_id', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_album_by_id(session: AsyncSessionDep, album_id: int) -> None:
+    """This deletes an album that have an id, defined by user"""
+    try:
+        await AlbumQueryBuilder.delete_album_by_id(session, album_id)
+    except AlbumNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
