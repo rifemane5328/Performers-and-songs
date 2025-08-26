@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from dependecies.session import AsyncSessionDep
 from common.errors import EmptyQueryResult
 from common.pagination import PaginationParams
-from services.songs.errors import SongWithNameAlreadyExists
+from services.songs.errors import SongWithNameAlreadyExists, SongNotFound
 from services.songs.query_builder.song import SongQueryBuilder
 from services.songs.schemas.song import SongListResponseSchema, SongResponseSchema, SongCreateSchema
 
@@ -32,3 +32,12 @@ async def create_song(session: AsyncSessionDep, data: SongCreateSchema) -> SongR
         return song
     except SongWithNameAlreadyExists as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
+
+
+@songs_router.get('/get_song_by_id/{id}', response_model=SongResponseSchema)
+async def get_song_by_id(session: AsyncSessionDep, song_id: int) -> SongResponseSchema:
+    try:
+        song = await SongQueryBuilder.get_song_by_id(session, song_id)
+        return song
+    except SongNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

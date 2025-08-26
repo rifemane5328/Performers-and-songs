@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
-from services.albums.errors import AlbumWithNameAlreadyExists
+from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound
 from services.albums.query_builder.album import AlbumQueryBuilder
 from services.albums.schemas.album import AlbumListResponseSchema, AlbumResponseSchema, AlbumCreateSchema
 
@@ -32,3 +32,13 @@ async def create_album(session: AsyncSessionDep, data: AlbumCreateSchema) -> Alb
         return AlbumResponseSchema.model_validate(album)
     except AlbumWithNameAlreadyExists as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
+
+
+@albums_router.get('/album_by_id/{id}', response_model=AlbumResponseSchema)
+async def get_album_by_id(session: AsyncSessionDep, album_id: int) -> AlbumResponseSchema:
+    """This returns a schema of album that have an id, defined by user"""
+    try:
+        album = await AlbumQueryBuilder.get_album_by_id(session, album_id)
+        return album
+    except AlbumNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

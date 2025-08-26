@@ -6,7 +6,7 @@ from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
 from models import Performer, Album, Song
-from services.performers.errors import PerformerWithNameAlreadyExists
+from services.performers.errors import PerformerWithNameAlreadyExists, PerformerNotFound
 from services.performers.schemas.performer import PerformerCreateSchema
 
 
@@ -41,4 +41,14 @@ class PerformerQueryBuilder:
         session.add(performer)
         await session.commit()
         await session.refresh(performer, attribute_names=['albums', 'singles'])
+        return performer
+
+    @staticmethod
+    async def get_performer_by_id(session: AsyncSessionDep, performer_id: int) -> Performer:
+        query = (select(Performer).where(Performer.id == performer_id)
+                 .options(selectinload(Performer.albums).selectinload(Album.songs), selectinload(Performer.singles)))
+        result = await session.execute(query)
+        performer = result.scalar()
+        if not performer:
+            raise PerformerNotFound
         return performer

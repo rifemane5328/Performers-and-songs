@@ -4,7 +4,7 @@ from sqlmodel import select
 from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
-from services.songs.errors import SongWithNameAlreadyExists
+from services.songs.errors import SongWithNameAlreadyExists, SongNotFound
 from services.songs.schemas.song import SongCreateSchema
 from models import Song
 
@@ -30,4 +30,13 @@ class SongQueryBuilder:
         session.add(song)
         await session.commit()
         await session.refresh(song)
+        return song
+
+    @staticmethod
+    async def get_song_by_id(session: AsyncSessionDep, song_id: int) -> Song:
+        query = select(Song).where(Song.id == song_id)
+        result = await session.execute(query)
+        song = result.scalar()
+        if not song:
+            raise SongNotFound
         return song

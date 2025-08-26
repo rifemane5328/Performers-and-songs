@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
-from services.performers.errors import PerformerWithNameAlreadyExists
+from services.performers.errors import PerformerWithNameAlreadyExists, PerformerNotFound
 from services.performers.query_builder.performer import PerformerQueryBuilder
 from services.performers.schemas.performer import (PerformerListResponseSchema, PerformerResponseSchema,
                                                    PerformerCreateSchema)
@@ -33,3 +33,13 @@ async def create_performer(session: AsyncSessionDep, data: PerformerCreateSchema
         return PerformerResponseSchema.model_validate(performer)
     except PerformerWithNameAlreadyExists as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
+
+
+@performers_router.get('/performer_by_id/{id}', response_model=PerformerResponseSchema)
+async def get_performer_by_id(session: AsyncSessionDep, performer_id: int) -> PerformerResponseSchema:
+    """This returns a schema of performer that have an id, defined by user"""
+    try:
+        performer = await PerformerQueryBuilder.get_performer_by_id(session, performer_id)
+        return performer
+    except PerformerNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

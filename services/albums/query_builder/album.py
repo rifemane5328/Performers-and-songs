@@ -6,7 +6,7 @@ from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
 from models import Album, Song
-from services.albums.errors import AlbumWithNameAlreadyExists
+from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound
 from services.albums.schemas.album import AlbumCreateSchema
 
 
@@ -32,4 +32,13 @@ class AlbumQueryBuilder:
         session.add(album)
         await session.commit()
         await session.refresh(album, attribute_names=['songs'])
+        return album
+
+    @staticmethod
+    async def get_album_by_id(session: AsyncSessionDep, album_id: int):
+        query = select(Album).where(Album.id == album_id).options(selectinload(Album.songs))
+        result = await session.execute(query)
+        album = result.scalar()
+        if not album:
+            raise AlbumNotFound
         return album
