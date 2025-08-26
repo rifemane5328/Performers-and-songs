@@ -1,3 +1,4 @@
+from pydantic import ConfigDict
 from sqlmodel import SQLModel, Field
 from typing import Optional, List
 from enum import Enum
@@ -8,7 +9,7 @@ from services import SongResponseSchema
 
 class PerformanceTypeEnum(str, Enum):
     solo = 'solo'
-    duo = 'trio'
+    duo = 'duo'
     trio = 'trio'
     group = 'group'
 
@@ -22,6 +23,8 @@ class PerformerResponseSchema(SQLModel):
 
     albums: Optional[List[AlbumResponseSchema]]
     singles: Optional[List[SongResponseSchema]]
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PerformerListResponseSchema(SQLModel):

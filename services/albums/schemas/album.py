@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional, List
 from services import SongResponseSchema
+from pydantic import ConfigDict
 
 
 class AlbumResponseSchema(SQLModel):
@@ -10,6 +11,8 @@ class AlbumResponseSchema(SQLModel):
     songs: List[SongResponseSchema]
     total_duration: str = Field(max_length=24)
     performer_id: int
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AlbumListResponseSchema(SQLModel):
