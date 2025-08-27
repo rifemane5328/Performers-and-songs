@@ -7,6 +7,7 @@ from common.pagination import PaginationParams
 from services.songs.errors import SongWithNameAlreadyExists, SongNotFound
 from services.songs.query_builder.song import SongQueryBuilder
 from services.songs.schemas.song import SongListResponseSchema, SongResponseSchema, SongCreateSchema
+from services.songs.schemas.filters import SongFilter
 
 
 songs_router = APIRouter()
@@ -15,10 +16,11 @@ songs_router = APIRouter()
 @songs_router.get('/songs', response_model=SongListResponseSchema)
 async def get_songs(session: AsyncSessionDep,
                     pagination_params: Annotated[PaginationParams,
-                                                 Depends(PaginationParams)]) -> SongListResponseSchema:
+                                                 Depends(PaginationParams)],
+                    filters: SongFilter = Depends()) -> SongListResponseSchema:
     """This returns a schema of all songs in the quantity, specified by pagination params"""
     try:
-        songs = await SongQueryBuilder.get_songs(session, pagination_params)
+        songs = await SongQueryBuilder.get_songs(session, pagination_params, filters)
         return SongListResponseSchema(items=songs)
     except EmptyQueryResult:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)

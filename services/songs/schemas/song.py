@@ -1,15 +1,32 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional, List
+from enum import Enum
+
+
+class SongTypeEnum(str, Enum):
+    pop = "pop"
+    relax = "relax"
+    rock = "rock"
+    metal = "metal"
+    house = "house"
+    techno = "techno"
+    electro = "electro"
+    hip_hop = "hip-hop"
+    rap = "rap"
+    classic_pop = "pop"
+    opera = "opera"
+    jazz = "jazz"
+    r_and_b = "R & B"
 
 
 class SongResponseSchema(SQLModel):
-    id: Optional[int]
+    id: Optional[int] = None
     title: str = Field(max_length=64)
     duration: str = Field(max_length=12)
-    genre: str = Field(max_length=32)
+    genre: SongTypeEnum = Field(max_length=32)
 
-    performer_id: int
-    album_id: Optional[int]
+    performer_id: Optional[int] = None
+    album_id: Optional[int] = None
 
 
 class SongListResponseSchema(SQLModel):
@@ -19,16 +36,16 @@ class SongListResponseSchema(SQLModel):
 class SongCreateSchema(SQLModel):
     title: str = Field(max_length=64)
     duration: str = Field(max_length=12)
-    genre: str = Field(max_length=32)
+    genre: SongTypeEnum = Field(max_length=32)
 
-    performer_id: int
-    album_id: Optional[int]
+    performer_id: Optional[int] = None
+    album_id: Optional[int] = None
 
 
 class SongUpdateSchema(SQLModel):
     title: Optional[str] = Field(default=None, max_length=64)
     duration: Optional[str] = Field(default=None, max_length=12)
-    genre: Optional[str] = Field(default=None, max_length=32)
+    genre: Optional[SongTypeEnum] = Field(default=None, max_length=32)
 
     performer_id: Optional[int] = Field(default=None)
     album_id: Optional[int] = Field(default=None)

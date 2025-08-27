@@ -5,12 +5,12 @@ from pydantic import ConfigDict
 
 
 class AlbumResponseSchema(SQLModel):
-    id: Optional[int]
+    id: Optional[int] = None
     title: str = Field(max_length=64)
     year: int
     songs: List[SongResponseSchema]
     total_duration: str = Field(max_length=24)
-    performer_id: int
+    performer_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -24,7 +24,7 @@ class AlbumCreateSchema(SQLModel):
     year: int
     songs: List[SongResponseSchema]
     total_duration: str = Field(max_length=24)
-    performer_id: int
+    performer_id: Optional[int] = None
 
 
 class AlbumUpdateSchema(SQLModel):

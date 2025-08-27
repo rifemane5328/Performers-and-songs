@@ -8,6 +8,7 @@ from services.performers.errors import PerformerWithNameAlreadyExists, Performer
 from services.performers.query_builder.performer import PerformerQueryBuilder
 from services.performers.schemas.performer import (PerformerListResponseSchema, PerformerResponseSchema,
                                                    PerformerCreateSchema)
+from services.performers.schemas.filters import PerformerFilter
 
 performers_router = APIRouter()
 
@@ -15,11 +16,12 @@ performers_router = APIRouter()
 @performers_router.get('/performers', response_model=PerformerListResponseSchema)
 async def get_performers(session: AsyncSessionDep,
                          pagination_params: Annotated[PaginationParams,
-                                                      Depends(PaginationParams)]) -> PerformerListResponseSchema:
+                                                      Depends(PaginationParams)],
+                         filters: PerformerFilter = Depends()) -> PerformerListResponseSchema:
     """This returns a schema of all performers with albums and singles in the quantity,
      specified by pagination params"""
     try:
-        performers = await PerformerQueryBuilder.get_performers(session, pagination_params)
+        performers = await PerformerQueryBuilder.get_performers(session, pagination_params, filters)
         return PerformerListResponseSchema(items=performers)
     except EmptyQueryResult:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)
@@ -30,9 +32,14 @@ async def create_performer(session: AsyncSessionDep, data: PerformerCreateSchema
     """This gives user a schema of performer to fill out and adds it to db, then returns it"""
     try:
         performer = await PerformerQueryBuilder.create_performer(session, data)
+
+        performer = await PerformerQueryBuilder.get_performer_with_relations(session, performer.id)
+
         return PerformerResponseSchema.model_validate(performer)
     except PerformerWithNameAlreadyExists as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
+    except PerformerNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
 @performers_router.get('/performer_by_id/{id}', response_model=PerformerResponseSchema)

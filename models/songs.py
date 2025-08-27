@@ -12,7 +12,7 @@ class Song(SQLModel, table=True):
     title: str = Field(sa_column=Column(VARCHAR(64), nullable=False))
     duration: str = Field(sa_column=Column(VARCHAR(12)))
     genre: str = Field(sa_column=Column(VARCHAR(32)))
-    performer_id: int = Field(foreign_key="performers.id", ondelete="CASCADE", nullable=False)
+    performer_id: Optional[int] = Field(foreign_key="performers.id", ondelete="CASCADE")
     album_id: Optional[int] = Field(foreign_key="albums.id", ondelete="CASCADE")
 
     performer: Optional[Performer] = Relationship(back_populates="singles")

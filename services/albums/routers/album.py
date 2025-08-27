@@ -7,6 +7,7 @@ from common.errors import EmptyQueryResult
 from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound
 from services.albums.query_builder.album import AlbumQueryBuilder
 from services.albums.schemas.album import AlbumListResponseSchema, AlbumResponseSchema, AlbumCreateSchema
+from services.albums.schemas.filters import AlbumFilter
 
 
 albums_router = APIRouter()
@@ -15,10 +16,11 @@ albums_router = APIRouter()
 @albums_router.get('/albums', response_model=AlbumListResponseSchema)
 async def get_albums(session: AsyncSessionDep,
                      pagination_params: Annotated[PaginationParams,
-                                                  Depends(PaginationParams)]) -> AlbumListResponseSchema:
+                                                  Depends(PaginationParams)],
+                     filters: AlbumFilter = Depends()) -> AlbumListResponseSchema:
     """This returns a schema of all albums with their songs in the quantity, specified by pagination params"""
     try:
-        albums = await AlbumQueryBuilder.get_albums(session, pagination_params)
+        albums = await AlbumQueryBuilder.get_albums(session, pagination_params, filters)
         return AlbumListResponseSchema(items=albums)
     except EmptyQueryResult:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)

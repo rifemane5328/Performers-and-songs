@@ -13,6 +13,6 @@ class Album(SQLModel, table=True):
     year: int = Field(sa_column=Column(INTEGER))
     songs: List["Song"] = Relationship(back_populates="album")
     total_duration: str = Field(sa_column=Column(VARCHAR(24)))
-    performer_id: int = Field(foreign_key="performers.id", ondelete="CASCADE", nullable=False)
+    performer_id: Optional[int] = Field(foreign_key="performers.id", ondelete="CASCADE")
 
     performer: Optional[Performer] = Relationship(back_populates="albums")

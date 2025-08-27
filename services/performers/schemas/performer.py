@@ -15,14 +15,14 @@ class PerformanceTypeEnum(str, Enum):
 
 
 class PerformerResponseSchema(SQLModel):
-    id: Optional[int]
+    id: Optional[int] = None
     pseudonym: str = Field(max_length=64)
-    biography: Optional[str] = Field(max_length=500)
+    biography: Optional[str] = Field(default=None, max_length=500)
     performance_type: PerformanceTypeEnum = Field(max_length=20)
-    photo_url: Optional[str] = Field(max_length=150)
+    photo_url: Optional[str] = Field(default=None, max_length=150)
 
-    albums: Optional[List[AlbumResponseSchema]]
-    singles: Optional[List[SongResponseSchema]]
+    albums: Optional[List[AlbumResponseSchema]] = None
+    singles: Optional[List[SongResponseSchema]] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -33,18 +33,18 @@ class PerformerListResponseSchema(SQLModel):
 
 class PerformerCreateSchema(SQLModel):
     pseudonym: str = Field(max_length=64)
-    biography: Optional[str] = Field(max_length=500)
+    biography: Optional[str] = Field(default=None, max_length=500)
     performance_type: PerformanceTypeEnum = Field(max_length=20)
-    photo_url: Optional[str] = Field(max_length=150)
+    photo_url: Optional[str] = Field(default=None, max_length=150)
 
-    albums: Optional[List[AlbumResponseSchema]]
-    singles: Optional[List[SongResponseSchema]]
+    albums: Optional[List[AlbumResponseSchema]] = None
+    singles: Optional[List[SongResponseSchema]] = None
 
 
 class PerformerUpdateSchema(SQLModel):
     pseudonym: Optional[str] = Field(default=None, max_length=64)
     biography: Optional[str] = Field(default=None, max_length=500)
-    performance_type: PerformanceTypeEnum = Field(default=None, max_length=20)
+    performance_type: Optional[PerformanceTypeEnum] = Field(default=None, max_length=20)
     photo_url: Optional[str] = Field(default=None, max_length=150)
 
     albums: Optional[List[AlbumResponseSchema]] = Field(default=None)
