@@ -11,7 +11,7 @@ class Album(SQLModel, table=True):
     id: Optional[int] = Field(primary_key=True)
     title: str = Field(sa_column=Column(VARCHAR(64), nullable=False))
     year: int = Field(sa_column=Column(INTEGER))
-    songs: List["Song"] = Relationship(back_populates="album")
+    songs: List["Song"] = Relationship(back_populates="album", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
     total_duration: str = Field(sa_column=Column(VARCHAR(24)))
     performer_id: Optional[int] = Field(foreign_key="performers.id", ondelete="CASCADE")
 

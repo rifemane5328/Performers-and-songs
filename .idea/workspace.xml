@@ -4,21 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7ebaace-8747-4c43-bbfb-49e98d52c057" name="Changes" comment="feat: get-by-id endpoints for all tables and errors for 404">
-      <change afterPath="$PROJECT_DIR$/services/albums/schemas/filters.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/performers/schemas/filters.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/songs/schemas/filters.py" afterDir="false" />
+    <list default="true" id="c7ebaace-8747-4c43-bbfb-49e98d52c057" name="Changes" comment="feat: added filters to get-endpoints, set id to optional in models and schemas, changed post performer but is still doesn't work completely">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/albums.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/albums.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/performers.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/performers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/songs.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/songs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/albums/query_builder/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/albums/query_builder/album.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/albums/routers/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/albums/routers/album.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/albums/schemas/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/albums/schemas/album.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/performers/query_builder/performer.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/performers/query_builder/performer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/performers/routers/performer.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/performers/routers/performer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/performers/schemas/performer.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/performers/schemas/performer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/songs/query_builder/song.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/songs/query_builder/song.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/songs/routers/song.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/songs/routers/song.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/songs/schemas/song.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/songs/schemas/song.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -117,7 +111,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756197410454</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="feat: added filters to get-endpoints, set id to optional in models and schemas, changed post performer but is still doesn't work completely">
+      <option name="closed" value="true" />
+      <created>1756318917947</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1756318917947</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -125,6 +127,7 @@
     <MESSAGE value="feat: now exactly added get-endpoints for performer and album, schemas for songs. Deleted env, pycache and an idea" />
     <MESSAGE value="feat: added post-endpoint for every table, errors if object with given name already exists, docs strings for routers and a schema for performance_type with 4 options" />
     <MESSAGE value="feat: get-by-id endpoints for all tables and errors for 404" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: get-by-id endpoints for all tables and errors for 404" />
+    <MESSAGE value="feat: added filters to get-endpoints, set id to optional in models and schemas, changed post performer but is still doesn't work completely" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: added filters to get-endpoints, set id to optional in models and schemas, changed post performer but is still doesn't work completely" />
   </component>
 </project>

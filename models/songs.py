@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import Column, String, VARCHAR, INTEGER
+from sqlalchemy import Column, VARCHAR
 from typing import Optional
 
 from models import Performer, Album

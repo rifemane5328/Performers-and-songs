@@ -10,6 +10,7 @@ from common.errors import EmptyQueryResult
 from models import Performer, Album, Song
 from services.performers.errors import PerformerWithNameAlreadyExists, PerformerNotFound
 from services.performers.schemas.performer import PerformerCreateSchema
+from services.songs.schemas.song import SongTypeEnum
 from services.performers.schemas.filters import PerformerFilter
 
 
@@ -55,19 +56,32 @@ class PerformerQueryBuilder:
         result = await session.execute(query)
         if result.scalar():
             raise PerformerWithNameAlreadyExists
-        albums = [
-            Album(
-                **album.model_dump(exclude={'songs'}),
-                songs=[Song(**song.model_dump()) for song in album.songs or []]
-            )
-            for album in data.albums or []
-        ]
 
-        singles = [
-            Song(**single.model_dump())
-            for single in data.singles or []
-            if single.album_id is None
-        ]
+        albums = []
+        album_song_keys = set()
+
+        for album_data in data.albums or []:
+            songs = []
+            for song_data in album_data.songs or []:
+                song = Song(**song_data.model_dump())
+                songs.append(song)
+                album_song_keys.add((song.title, song.duration, str(song.genre)))
+
+            albums.append(
+                Album(
+                    **album_data.model_dump(exclude={'songs'}),
+                    songs=songs
+                )
+            )
+
+        print(album_song_keys)
+
+        singles = []
+        for single_data in data.singles or []:
+            key = (single_data.title, single_data.duration, str(single_data.genre))
+            if key not in album_song_keys:
+                song = Song(**single_data.model_dump())
+                singles.append(song)
 
         performer = Performer(
             **data.model_dump(exclude={'albums', 'singles'}),
@@ -76,14 +90,13 @@ class PerformerQueryBuilder:
 
         session.add(performer)
         await session.commit()
-        await session.refresh(performer, attribute_names=['albums', 'singles'])
 
-        for album in performer.albums:
+        for album in albums:
             for song in album.songs:
                 song.performer_id = performer.id
 
         await session.commit()
-        await session.refresh(performer)
+        await session.refresh(performer, attribute_names=['albums', 'singles'])
         return performer
 
     @staticmethod

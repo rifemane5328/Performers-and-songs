@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional, List
-from services import SongResponseSchema
+from services import SongResponseSchema, SongCreateSchema
 from pydantic import ConfigDict
 
 
@@ -22,9 +22,9 @@ class AlbumListResponseSchema(SQLModel):
 class AlbumCreateSchema(SQLModel):
     title: str = Field(max_length=64)
     year: int
-    songs: List[SongResponseSchema]
+    songs: List[SongCreateSchema] = []
     total_duration: str = Field(max_length=24)
-    performer_id: Optional[int] = None
+    # performer_id: Optional[int] = None
 
 
 class AlbumUpdateSchema(SQLModel):

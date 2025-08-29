@@ -3,8 +3,8 @@ from sqlmodel import SQLModel, Field
 from typing import Optional, List
 from enum import Enum
 
-from services import AlbumResponseSchema
-from services import SongResponseSchema
+from services import AlbumResponseSchema, AlbumCreateSchema
+from services import SongResponseSchema, SongCreateSchema
 
 
 class PerformanceTypeEnum(str, Enum):
@@ -37,8 +37,8 @@ class PerformerCreateSchema(SQLModel):
     performance_type: PerformanceTypeEnum = Field(max_length=20)
     photo_url: Optional[str] = Field(default=None, max_length=150)
 
-    albums: Optional[List[AlbumResponseSchema]] = None
-    singles: Optional[List[SongResponseSchema]] = None
+    albums: Optional[List[AlbumCreateSchema]] = None
+    singles: Optional[List[SongCreateSchema]] = None
 
 
 class PerformerUpdateSchema(SQLModel):

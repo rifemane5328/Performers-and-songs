@@ -38,8 +38,8 @@ class SongCreateSchema(SQLModel):
     duration: str = Field(max_length=12)
     genre: SongTypeEnum = Field(max_length=32)
 
-    performer_id: Optional[int] = None
-    album_id: Optional[int] = None
+    # performer_id: Optional[int] = None
+    # album_id: Optional[int] = None
 
 
 class SongUpdateSchema(SQLModel):
