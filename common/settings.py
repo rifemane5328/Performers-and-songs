@@ -44,5 +44,12 @@ class DatabaseConnectionSettings(DefaultSettings):
     database: DatabaseSettings
 
 
+class AuthSettings(BaseModel):
+    reset_password_token_secret: SecretStr
+    verification_token_secret: SecretStr
+    jwt_strategy_token_secret: SecretStr
+
+
 class Settings(DatabaseConnectionSettings):
     debug: bool
+    auth: AuthSettings
