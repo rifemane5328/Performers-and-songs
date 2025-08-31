@@ -1,8 +1,8 @@
-"""set ids to optional
+"""set total_duration to optional
 
-Revision ID: 05de6a593132
-Revises: 2a847310492f
-Create Date: 2025-08-27 14:27:59.400741
+Revision ID: 13d8aa9c2a61
+Revises: 5d8e01bfecb5
+Create Date: 2025-08-30 14:14:20.644825
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '05de6a593132'
-down_revision: Union[str, Sequence[str], None] = '2a847310492f'
+revision: str = '13d8aa9c2a61'
+down_revision: Union[str, Sequence[str], None] = '5d8e01bfecb5'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

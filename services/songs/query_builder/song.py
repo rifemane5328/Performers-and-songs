@@ -5,10 +5,11 @@ from sqlalchemy import Select
 from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
-from services.songs.errors import SongWithNameAlreadyExists, SongNotFound
+from services.songs.errors import SongWithNameAlreadyExists, SongNotFound, InvalidSongDuration
 from services.songs.schemas.song import SongCreateSchema
 from services.songs.schemas.filters import SongFilter
 from models import Song
+from services.albums.duration_calc import parse_song_length
 
 
 class SongQueryBuilder:
@@ -30,6 +31,14 @@ class SongQueryBuilder:
         if filters and filters.genre:
             select_query = select_query.where(Song.genre.ilike(f'%{filters.genre}%'))
         return select_query
+
+    @staticmethod
+    async def validate_song_duration(data: SongCreateSchema):
+        try:
+            parse_song_length(data.duration)
+        except ValueError:
+            raise InvalidSongDuration(song_title=data.title,
+                                      duration=data.duration)
 
     @staticmethod
     async def create_song(session: AsyncSessionDep, data: SongCreateSchema) -> Song:

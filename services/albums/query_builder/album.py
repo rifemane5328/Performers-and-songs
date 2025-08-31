@@ -7,9 +7,11 @@ from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
 from models import Album, Song
-from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound
+from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound, AlbumMustContainSongs
+from services.songs.errors import InvalidSongDuration
 from services.albums.schemas.album import AlbumCreateSchema
 from services.albums.schemas.filters import AlbumFilter
+from services.albums.duration_calc import calculate_album_duration, parse_song_length
 
 
 class AlbumQueryBuilder:
@@ -34,13 +36,32 @@ class AlbumQueryBuilder:
         return select_query
 
     @staticmethod
+    async def validate_album_songs_duration(data: AlbumCreateSchema):
+        for song_data in data.songs:
+            try:
+                parse_song_length(song_data.duration)
+            except ValueError:
+                raise InvalidSongDuration(album_title=data.title,
+                                          song_title=song_data.title,
+                                          duration=song_data.duration)
+
+    @staticmethod
     async def create_album(session: AsyncSessionDep, data: AlbumCreateSchema) -> Album:
+        await AlbumQueryBuilder.validate_album_songs_duration(data)
+
+        if not data.songs:
+            raise AlbumMustContainSongs
+
         query = select(Album).where(Album.title == data.title)
         result = await session.execute(query)
         if result.scalar():
             raise AlbumWithNameAlreadyExists
-        album = Album(**data.model_dump(exclude={'songs'}),
-                      songs=[Song(**song.model_dump()) for song in data.songs] if data.songs else [])
+        songs = [Song(**song.model_dump()) for song in data.songs]
+        total_duration = calculate_album_duration([song.duration for song in songs])
+
+        album = Album(**data.model_dump(exclude={'songs', 'total_duration'}),
+                      songs=songs,
+                      total_duration=total_duration)
         session.add(album)
         await session.commit()
         await session.refresh(album, attribute_names=['songs'])

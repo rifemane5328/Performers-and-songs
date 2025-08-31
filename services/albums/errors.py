@@ -6,3 +6,8 @@ class AlbumWithNameAlreadyExists(Exception):
 class AlbumNotFound(Exception):
     def __str__(self):
         return "Album not found"
+
+
+class AlbumMustContainSongs(Exception):
+    def __str__(self):
+        return "Album must contain at least one song"

@@ -4,31 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7ebaace-8747-4c43-bbfb-49e98d52c057" name="Changes" comment="fix: fixed post-performer endpoint, so now the song isn't being duplicated and performer_id in it isn't null.Deleted id from schemas and changed lists in models">
-      <change afterPath="$PROJECT_DIR$/dependecies/auth.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/user.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/users/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/users/modules/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/users/modules/manager.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/users/routers/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/users/routers/users.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/users/schemas/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/users/schemas/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+    <list default="true" id="c7ebaace-8747-4c43-bbfb-49e98d52c057" name="Changes" comment="feat: added user, models for it, manager, endpoints and schemas; using fastapi-users">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/common/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/05de6a593132_set_ids_to_optional.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/2a847310492f_set_pseudonym_to_unique.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/4ec14ae0c78f_created_3_tables.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/9a96977e10f0_fixed_singles_in_performer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/a8f40dc69a1c_made_song_the_table.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/b6cd72596388_set_id_to_optional_and_changed_strings_.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/e8a699cc9bd6_deleted_nullable_from_performer_id.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/f5a5d1cc1312_added_genre_to_songs.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/faf4f9fe71c9_changed_lists_correctly.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/__init__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +127,23 @@
       <option name="project" value="LOCAL" />
       <updated>1756465624969</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="feat: added user, models for it, manager, endpoints and schemas; using fastapi-users">
+      <option name="closed" value="true" />
+      <created>1756536761497</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1756536761497</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: added user, models for it, manager, endpoints and schemas; using fastapi-users">
+      <option name="closed" value="true" />
+      <created>1756536769610</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1756536769610</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -152,6 +153,7 @@
     <MESSAGE value="feat: get-by-id endpoints for all tables and errors for 404" />
     <MESSAGE value="feat: added filters to get-endpoints, set id to optional in models and schemas, changed post performer but is still doesn't work completely" />
     <MESSAGE value="fix: fixed post-performer endpoint, so now the song isn't being duplicated and performer_id in it isn't null.Deleted id from schemas and changed lists in models" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: fixed post-performer endpoint, so now the song isn't being duplicated and performer_id in it isn't null.Deleted id from schemas and changed lists in models" />
+    <MESSAGE value="feat: added user, models for it, manager, endpoints and schemas; using fastapi-users" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: added user, models for it, manager, endpoints and schemas; using fastapi-users" />
   </component>
 </project>

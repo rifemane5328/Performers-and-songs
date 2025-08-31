@@ -9,9 +9,11 @@ from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
 from models import Performer, Album, Song
 from services.performers.errors import PerformerWithNameAlreadyExists, PerformerNotFound
+from services.albums.errors import AlbumMustContainSongs
+from services.songs.errors import InvalidSongDuration
 from services.performers.schemas.performer import PerformerCreateSchema
-from services.songs.schemas.song import SongTypeEnum
 from services.performers.schemas.filters import PerformerFilter
+from services.albums.duration_calc import calculate_album_duration, parse_song_length
 
 
 class PerformerQueryBuilder:
@@ -38,6 +40,23 @@ class PerformerQueryBuilder:
         return select_query
 
     @staticmethod
+    async def validate_album_songs_duration(data: PerformerCreateSchema):
+        for album_data in data.albums:
+            for song_data in album_data.songs:
+                try:
+                    parse_song_length(song_data.duration)
+                except ValueError:
+                    raise InvalidSongDuration(song_title=song_data.title,
+                                              duration=song_data.duration,
+                                              album_title=album_data.title)
+        for single_data in data.singles:
+            try:
+                parse_song_length(single_data.duration)
+            except ValueError:
+                raise InvalidSongDuration(song_title=single_data.title,
+                                          duration=single_data.duration)
+
+    @staticmethod
     async def get_performer_with_relations(session: AsyncSessionDep, performer_id: int) -> Performer:
         query = select(Performer).options(
             selectinload(Performer.albums).selectinload(Album.songs),
@@ -52,6 +71,11 @@ class PerformerQueryBuilder:
 
     @staticmethod
     async def create_performer(session: AsyncSessionDep, data: PerformerCreateSchema) -> Performer:
+        await PerformerQueryBuilder.validate_album_songs_duration(data)
+
+        for album_data in data.albums:
+            if not album_data.songs:
+                raise AlbumMustContainSongs
         query = select(Performer).where(Performer.pseudonym == data.pseudonym)
         result = await session.execute(query)
         if result.scalar():
@@ -64,13 +88,17 @@ class PerformerQueryBuilder:
             songs = []
             for song_data in album_data.songs or []:
                 song = Song(**song_data.model_dump())
+                song.performer_id = None
                 songs.append(song)
                 album_song_keys.add((song.title, song.duration, str(song.genre)))
 
+            total_duration = calculate_album_duration([song.duration for song in songs])
+
             albums.append(
                 Album(
-                    **album_data.model_dump(exclude={'songs'}),
-                    songs=songs
+                    **album_data.model_dump(exclude={'songs', 'total_duration'}),
+                    songs=songs,
+                    total_duration=total_duration
                 )
             )
 
@@ -81,6 +109,7 @@ class PerformerQueryBuilder:
             key = (single_data.title, single_data.duration, str(single_data.genre))
             if key not in album_song_keys:
                 song = Song(**single_data.model_dump())
+                song.performer_id = None
                 singles.append(song)
 
         performer = Performer(
