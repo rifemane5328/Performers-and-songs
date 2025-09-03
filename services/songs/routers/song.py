@@ -5,9 +5,9 @@ from dependecies.session import AsyncSessionDep
 from common.errors import EmptyQueryResult
 from common.pagination import PaginationParams
 from models import User
-from services.songs.errors import SongWithNameAlreadyExists, SongNotFound
+from services.songs.errors import SongWithNameAlreadyExists, SongNotFound, InvalidSongDuration
 from services.songs.query_builder.song import SongQueryBuilder
-from services.songs.schemas.song import SongListResponseSchema, SongResponseSchema, SongCreateSchema
+from services.songs.schemas.song import SongListResponseSchema, SongResponseSchema, SongCreateSchema, SongUpdateSchema
 from services.songs.schemas.filters import SongFilter
 from services.users.modules.manager import current_active_user
 
@@ -40,6 +40,8 @@ async def create_song(session: AsyncSessionDep, data: SongCreateSchema,
         return song
     except SongWithNameAlreadyExists as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
+    except InvalidSongDuration as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @songs_router.get('/song_by_id/{id}', response_model=SongResponseSchema)
@@ -63,3 +65,17 @@ async def delete_song_by_id(session: AsyncSessionDep, song_id: int,
         print(f"User {user.email} has deleted an album")
     except SongNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@songs_router.patch('/song_by_id/{id}', response_model=SongResponseSchema)
+async def update_song_by_id(session: AsyncSessionDep, song_id: int, data: SongUpdateSchema,
+                            user: User = Depends(current_active_user)) -> SongResponseSchema:
+    """This allows user to change those song's fields, which are left in the schema. Missing fields remain untouched"""
+    try:
+        song = await SongQueryBuilder.update_song_by_id(session, song_id, data)
+        print(f"User {user.email} has updated a song")
+        return song
+    except SongNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except InvalidSongDuration as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

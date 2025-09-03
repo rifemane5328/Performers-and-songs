@@ -9,7 +9,7 @@ from common.errors import EmptyQueryResult
 from models import Album, Song
 from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound, AlbumMustContainSongs
 from services.songs.errors import InvalidSongDuration
-from services.albums.schemas.album import AlbumCreateSchema
+from services.albums.schemas.album import AlbumCreateSchema, AlbumUpdateSchema
 from services.albums.schemas.filters import AlbumFilter
 from services.albums.duration_calc import calculate_album_duration, parse_song_length
 
@@ -83,3 +83,12 @@ class AlbumQueryBuilder:
         query = delete(Album).where(Album.id == album_id)
         await session.execute(query)
         await session.commit()
+
+    @staticmethod
+    async def update_album_by_id(session: AsyncSessionDep, album_id: int, data: AlbumUpdateSchema):
+        album = await AlbumQueryBuilder.get_album_by_id(session, album_id)
+        for key, value in data.model_dump(exclude_unset=True).items():
+            setattr(album, key, value)
+        await session.commit()
+        await session.refresh(album)
+        return album

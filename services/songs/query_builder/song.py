@@ -6,7 +6,7 @@ from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
 from services.songs.errors import SongWithNameAlreadyExists, SongNotFound, InvalidSongDuration
-from services.songs.schemas.song import SongCreateSchema
+from services.songs.schemas.song import SongCreateSchema, SongUpdateSchema
 from services.songs.schemas.filters import SongFilter
 from models import Song
 from services.albums.duration_calc import parse_song_length
@@ -42,6 +42,8 @@ class SongQueryBuilder:
 
     @staticmethod
     async def create_song(session: AsyncSessionDep, data: SongCreateSchema) -> Song:
+        await SongQueryBuilder.validate_song_duration(data)
+
         query = select(Song).where(Song.title == data.title)
         result = await session.execute(query)
         if result.scalar():
@@ -68,3 +70,15 @@ class SongQueryBuilder:
         query = delete(Song).where(Song.id == song_id)
         await session.execute(query)
         await session.commit()
+
+    @staticmethod
+    async def update_song_by_id(session: AsyncSessionDep, song_id: int, data: SongUpdateSchema) -> Song:
+        if data.duration:
+            await SongQueryBuilder.validate_song_duration(data)
+
+        song = await SongQueryBuilder.get_song_by_id(session, song_id)
+        for key, value in data.model_dump(exclude_unset=True).items():
+            setattr(song, key, value)
+        await session.commit()
+        await session.refresh(song)
+        return song

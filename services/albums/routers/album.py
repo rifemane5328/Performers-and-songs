@@ -8,7 +8,8 @@ from models import User
 from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound, AlbumMustContainSongs
 from services.songs.errors import InvalidSongDuration
 from services.albums.query_builder.album import AlbumQueryBuilder
-from services.albums.schemas.album import AlbumListResponseSchema, AlbumResponseSchema, AlbumCreateSchema
+from services.albums.schemas.album import (AlbumListResponseSchema, AlbumResponseSchema, AlbumCreateSchema,
+                                           AlbumUpdateSchema)
 from services.albums.schemas.filters import AlbumFilter
 from services.users.modules.manager import current_active_user
 
@@ -61,12 +62,25 @@ async def get_album_by_id(session: AsyncSessionDep, album_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@albums_router.delete('/album_by_id', status_code=status.HTTP_204_NO_CONTENT)
+@albums_router.delete('/album_by_id/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_album_by_id(session: AsyncSessionDep, album_id: int,
                              user: User = Depends(current_active_user)) -> None:
     """This deletes an album that have an id, defined by user"""
     try:
         await AlbumQueryBuilder.delete_album_by_id(session, album_id)
         print(f"User {user.email} has deleted an album")
+    except AlbumNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@albums_router.patch('/album_by_id/{id}', response_model=AlbumResponseSchema)
+async def update_album_by_id(session: AsyncSessionDep, album_id: int,
+                             data: AlbumUpdateSchema, user: User = Depends(current_active_user)) -> AlbumResponseSchema:
+    """This allows user to change those album's fields, which are left in the schema.
+    Missing fields remain untouched"""
+    try:
+        album = await AlbumQueryBuilder.update_album_by_id(session, album_id, data)
+        print(f"User {user.email} has updated an album")
+        return album
     except AlbumNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

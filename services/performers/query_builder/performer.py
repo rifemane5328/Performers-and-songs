@@ -11,7 +11,7 @@ from models import Performer, Album, Song
 from services.performers.errors import PerformerWithNameAlreadyExists, PerformerNotFound
 from services.albums.errors import AlbumMustContainSongs
 from services.songs.errors import InvalidSongDuration
-from services.performers.schemas.performer import PerformerCreateSchema
+from services.performers.schemas.performer import PerformerCreateSchema, PerformerUpdateSchema
 from services.performers.schemas.filters import PerformerFilter
 from services.albums.duration_calc import calculate_album_duration, parse_song_length
 
@@ -41,15 +41,15 @@ class PerformerQueryBuilder:
 
     @staticmethod
     async def validate_album_songs_duration(data: PerformerCreateSchema):
-        for album_data in data.albums:
-            for song_data in album_data.songs:
+        for album_data in data.albums or []:
+            for song_data in album_data.songs or []:
                 try:
                     parse_song_length(song_data.duration)
                 except ValueError:
                     raise InvalidSongDuration(song_title=song_data.title,
                                               duration=song_data.duration,
                                               album_title=album_data.title)
-        for single_data in data.singles:
+        for single_data in data.singles or []:
             try:
                 parse_song_length(single_data.duration)
             except ValueError:
@@ -102,8 +102,6 @@ class PerformerQueryBuilder:
                 )
             )
 
-        print(album_song_keys)
-
         singles = []
         for single_data in data.singles or []:
             key = (single_data.title, single_data.duration, str(single_data.genre))
@@ -145,3 +143,13 @@ class PerformerQueryBuilder:
         query = delete(Performer).where(Performer.id == performer_id)
         await session.execute(query)
         await session.commit()
+
+    @staticmethod
+    async def update_performer_by_id(session: AsyncSessionDep, performer_id: int,
+                                     data: PerformerUpdateSchema) -> Performer:
+        performer = await PerformerQueryBuilder.get_performer_by_id(session, performer_id)
+        for key, value in data.model_dump(exclude_unset=True, exclude={'albums', 'singles'}).items():
+            setattr(performer, key, value)
+        await session.commit()
+        await session.refresh(performer)
+        return performer

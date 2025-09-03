@@ -17,7 +17,11 @@ class InvalidSongDuration(Exception):
         self.duration = duration
 
     def __str__(self):
-        base_msg = f"Invalid song duration '{self.duration} in song {self.song_title}'"
-        if self.album_title:
-            base_msg += f", in album {self.album_title}"
-        return base_msg + ". Expected format is minutes:seconds, for ex. '4:23'"
+        base_msg = f"Invalid song duration '{self.duration}' "
+        if self.song_title and self.album_title:
+            base_msg += f"in song {self.song_title}, in album {self.album_title}"
+        elif self.song_title:
+            base_msg += f"in song '{self.song_title}'"
+        elif self.album_title:
+            base_msg += f"in album '{self.album_title}'"
+        return base_msg + ". Expected format is minutes:seconds, for ex. '4:23'."
