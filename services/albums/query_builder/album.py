@@ -33,6 +33,8 @@ class AlbumQueryBuilder:
             select_query = select_query.where(Album.title.ilike(f'%{filters.title}%'))
         if filters and filters.year:
             select_query = select_query.where(cast(Album.year, String).ilike(f'%{filters.year}%'))
+        if filters and filters.performer_id:
+            select_query = select_query.where(Album.performer_id == filters.performer_id)
         return select_query
 
     @staticmethod

@@ -14,7 +14,8 @@ from services.albums.duration_calc import parse_song_length
 
 class SongQueryBuilder:
     @staticmethod
-    async def get_songs(session: AsyncSessionDep, pagination_params: PaginationParams, filters: SongFilter) -> List[Song]:
+    async def get_songs(session: AsyncSessionDep, pagination_params: PaginationParams,
+                        filters: SongFilter) -> List[Song]:
         query_offset, query_limit = (pagination_params.page - 1) * pagination_params.size, pagination_params.size
         select_query = (await SongQueryBuilder.apply_filters(select(Song)
                                                              .offset(query_offset).limit(query_limit), filters))
@@ -26,10 +27,16 @@ class SongQueryBuilder:
 
     @staticmethod
     async def apply_filters(select_query: Select, filters: SongFilter) -> Select:
-        if filters and filters.title:
+        if filters.title is not None:
             select_query = select_query.where(Song.title.ilike(f'%{filters.title}%'))
-        if filters and filters.genre:
+        if filters.genre is not None:
             select_query = select_query.where(Song.genre.ilike(f'%{filters.genre}%'))
+        if filters.performer_id is not None:
+            select_query = select_query.where(Song.performer_id == filters.performer_id)
+        if filters and filters.album_id is not None:
+            select_query = select_query.where(Song.album_id == filters.album_id)
+        if filters and filters.album_id_is_null:
+            select_query = select_query.where(Song.album_id.is_(None))
         return select_query
 
     @staticmethod

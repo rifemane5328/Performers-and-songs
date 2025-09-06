@@ -36,7 +36,8 @@ class PerformerQueryBuilder:
         if filters and filters.pseudonym:
             select_query = select_query.where(Performer.pseudonym.ilike(f'%{filters.pseudonym}%'))
         if filters and filters.performance_type:
-            select_query = select_query.where(Performer.performance_type.ilike(f'%{filters.performance_type}%'))
+            select_query = select_query.where(Performer.performance_type
+                                              .ilike(f'%{filters.performance_type}%'))
         return select_query
 
     @staticmethod
