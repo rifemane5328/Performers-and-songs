@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7ebaace-8747-4c43-bbfb-49e98d52c057" name="Changes" comment="feat: added filtering by performer_id and album_id for albums and songs&#10;&#10;- Added filter by performer_id to albums&#10;- Added filter by performer_id and album_id to songs&#10;- Added 'album_id_is_null' filter to return only singles (songs without an album)">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_24_08_2025_11_21__Changes_.xml" beforeDir="false" />
+    <list default="true" id="c7ebaace-8747-4c43-bbfb-49e98d52c057" name="Changes" comment="feat: added put-methods for all tables&#10;&#10;feat(song): Added put methods for Performer, Album and Song;&#10;fix: Added updates for total_duration of album for both update endpoints(patch and put) when total_duration of song is updated;&#10;fix: Recalculate total_duration for both old and new albums if album_id changes&#10;feat(schemas): Added FullUpdate schemas for Performer, Album and Song; also deleted performer_id from both update schemas of the song(because user can not give song to another performer)">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/2a847310492f_set_pseudonym_to_unique.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/4ec14ae0c78f_created_3_tables.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/9a96977e10f0_fixed_singles_in_performer.py" beforeDir="false" />
@@ -16,15 +14,6 @@
       <change beforePath="$PROJECT_DIR$/migrations/versions/e8a699cc9bd6_deleted_nullable_from_performer_id.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/f5a5d1cc1312_added_genre_to_songs.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/faf4f9fe71c9_changed_lists_correctly.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/albums/query_builder/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/albums/query_builder/album.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/albums/routers/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/albums/routers/album.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/albums/schemas/album.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/albums/schemas/album.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/performers/query_builder/performer.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/performers/query_builder/performer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/performers/routers/performer.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/performers/routers/performer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/performers/schemas/performer.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/performers/schemas/performer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/songs/query_builder/song.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/songs/query_builder/song.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/songs/routers/song.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/songs/routers/song.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/songs/schemas/song.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/songs/schemas/song.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,8 +161,27 @@
       <option name="project" value="LOCAL" />
       <updated>1757151310766</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="feat: added put-methods for all tables&#10;&#10;feat(song): Added put methods for Performer, Album and Song;&#10;fix: Added updates for total_duration of album for both update endpoints(patch and put) when total_duration of song is updated;&#10;fix: Recalculate total_duration for both old and new albums if album_id changes&#10;feat(schemas): Added FullUpdate schemas for Performer, Album and Song; also deleted performer_id from both update schemas of the song(because user can not give song to another performer)">
+      <option name="closed" value="true" />
+      <created>1757242629500</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1757242629500</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: get-endpoint for performer and album, schemas for all the tables" />
@@ -185,6 +193,7 @@
     <MESSAGE value="feat: added user, models for it, manager, endpoints and schemas; using fastapi-users" />
     <MESSAGE value="feat: added update-endpoints, added check for correct song duration in post-song; fixed exception InvalidSongDuration, so now it prints name of the song and album, depends on the path to the song; fixed small bugs" />
     <MESSAGE value="feat: added filtering by performer_id and album_id for albums and songs&#10;&#10;- Added filter by performer_id to albums&#10;- Added filter by performer_id and album_id to songs&#10;- Added 'album_id_is_null' filter to return only singles (songs without an album)" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: added filtering by performer_id and album_id for albums and songs&#10;&#10;- Added filter by performer_id to albums&#10;- Added filter by performer_id and album_id to songs&#10;- Added 'album_id_is_null' filter to return only singles (songs without an album)" />
+    <MESSAGE value="feat: added put-methods for all tables&#10;&#10;feat(song): Added put methods for Performer, Album and Song;&#10;fix: Added updates for total_duration of album for both update endpoints(patch and put) when total_duration of song is updated;&#10;fix: Recalculate total_duration for both old and new albums if album_id changes&#10;feat(schemas): Added FullUpdate schemas for Performer, Album and Song; also deleted performer_id from both update schemas of the song(because user can not give song to another performer)" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: added put-methods for all tables&#10;&#10;feat(song): Added put methods for Performer, Album and Song;&#10;fix: Added updates for total_duration of album for both update endpoints(patch and put) when total_duration of song is updated;&#10;fix: Recalculate total_duration for both old and new albums if album_id changes&#10;feat(schemas): Added FullUpdate schemas for Performer, Album and Song; also deleted performer_id from both update schemas of the song(because user can not give song to another performer)" />
   </component>
 </project>
