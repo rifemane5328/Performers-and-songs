@@ -31,3 +31,9 @@ class AlbumUpdateSchema(SQLModel):
     title: Optional[str] = Field(default=None, max_length=64)
     year: Optional[int] = Field(default=None)
     performer_id: Optional[int] = Field(default=None)
+
+
+class AlbumFullUpdateSchema(SQLModel):
+    title: str = Field(max_length=64)
+    year: int
+    performer_id: int

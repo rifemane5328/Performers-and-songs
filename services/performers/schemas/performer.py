@@ -46,3 +46,10 @@ class PerformerUpdateSchema(SQLModel):
     biography: Optional[str] = Field(default=None, max_length=500)
     performance_type: Optional[PerformanceTypeEnum] = Field(default=None, max_length=20)
     photo_url: Optional[str] = Field(default=None, max_length=150)
+
+
+class PerformerFullUpdateSchema(SQLModel):
+    pseudonym: str = Field(max_length=64)
+    biography: str = Field(max_length=500)
+    performance_type: PerformanceTypeEnum = Field(max_length=20)
+    photo_url: str = Field(max_length=150)

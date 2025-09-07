@@ -11,7 +11,8 @@ from models import Performer, Album, Song
 from services.performers.errors import PerformerWithNameAlreadyExists, PerformerNotFound
 from services.albums.errors import AlbumMustContainSongs
 from services.songs.errors import InvalidSongDuration
-from services.performers.schemas.performer import PerformerCreateSchema, PerformerUpdateSchema
+from services.performers.schemas.performer import (PerformerCreateSchema, PerformerUpdateSchema,
+                                                   PerformerFullUpdateSchema)
 from services.performers.schemas.filters import PerformerFilter
 from services.albums.duration_calc import calculate_album_duration, parse_song_length
 
@@ -150,6 +151,16 @@ class PerformerQueryBuilder:
                                      data: PerformerUpdateSchema) -> Performer:
         performer = await PerformerQueryBuilder.get_performer_by_id(session, performer_id)
         for key, value in data.model_dump(exclude_unset=True, exclude={'albums', 'singles'}).items():
+            setattr(performer, key, value)
+        await session.commit()
+        await session.refresh(performer)
+        return performer
+
+    @staticmethod
+    async def replace_performer_by_id(session: AsyncSessionDep, performer_id: int,
+                                      data: PerformerFullUpdateSchema) -> Performer:
+        performer = await PerformerQueryBuilder.get_performer_by_id(session, performer_id)
+        for key, value in data.model_dump(exclude={'albums', 'singles'}).items():
             setattr(performer, key, value)
         await session.commit()
         await session.refresh(performer)

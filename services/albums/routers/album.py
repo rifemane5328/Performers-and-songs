@@ -9,7 +9,7 @@ from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound, Al
 from services.songs.errors import InvalidSongDuration
 from services.albums.query_builder.album import AlbumQueryBuilder
 from services.albums.schemas.album import (AlbumListResponseSchema, AlbumResponseSchema, AlbumCreateSchema,
-                                           AlbumUpdateSchema)
+                                           AlbumUpdateSchema, AlbumFullUpdateSchema)
 from services.albums.schemas.filters import AlbumFilter
 from services.users.modules.manager import current_active_user
 
@@ -81,6 +81,18 @@ async def update_album_by_id(session: AsyncSessionDep, album_id: int,
     try:
         album = await AlbumQueryBuilder.update_album_by_id(session, album_id, data)
         print(f"User {user.email} has updated an album")
+        return album
+    except AlbumNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@albums_router.put('/album_by_id/{id}', response_model=AlbumResponseSchema)
+async def replace_album_by_id(session: AsyncSessionDep, album_id: int,
+                              data: AlbumFullUpdateSchema,
+                              user: User = Depends(current_active_user)) -> AlbumResponseSchema:
+    try:
+        album = await AlbumQueryBuilder.replace_album_by_id(session, album_id, data)
+        print(f"User {user.email} has replaced an album")
         return album
     except AlbumNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

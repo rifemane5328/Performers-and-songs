@@ -9,7 +9,8 @@ from services.performers.errors import PerformerWithNameAlreadyExists, Performer
 from services.songs.errors import InvalidSongDuration
 from services.performers.query_builder.performer import PerformerQueryBuilder
 from services.performers.schemas.performer import (PerformerListResponseSchema, PerformerResponseSchema,
-                                                   PerformerCreateSchema, PerformerUpdateSchema)
+                                                   PerformerCreateSchema, PerformerUpdateSchema,
+                                                   PerformerFullUpdateSchema)
 from services.performers.schemas.filters import PerformerFilter
 from services.users.modules.manager import current_active_user
 
@@ -87,5 +88,15 @@ async def update_performer_by_id(session: AsyncSessionDep, performer_id: int,
         return performer
     except PerformerNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-    except InvalidSongDuration as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@performers_router.put('/performer_by_id/{id}', response_model=PerformerResponseSchema)
+async def replace_performer_by_id(session: AsyncSessionDep, performer_id: int,
+                                  data: PerformerFullUpdateSchema,
+                                  user: User = Depends(current_active_user)) -> PerformerResponseSchema:
+    try:
+        performer = await PerformerQueryBuilder.replace_performer_by_id(session, performer_id, data)
+        print(f"User {user.email} has replaced a song")
+        return performer
+    except PerformerNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

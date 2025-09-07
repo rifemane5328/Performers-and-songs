@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(performers_router, tags=['performers, performer, performer_by_id, performer_by_id, performer_by_id'])
-app.include_router(albums_router, tags=['albums, album, album_by_id, album_by_id, album_by_id'])
-app.include_router(songs_router, tags=['songs, song, song_by_id, song_by_id, song_by_id'])
+app.include_router(performers_router, tags=['performers'])
+app.include_router(albums_router, tags=['albums'])
+app.include_router(songs_router, tags=['songs'])
 app.include_router(users_router, tags=['users'])

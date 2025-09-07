@@ -6,10 +6,11 @@ from dependecies.session import AsyncSessionDep
 from common.pagination import PaginationParams
 from common.errors import EmptyQueryResult
 from services.songs.errors import SongWithNameAlreadyExists, SongNotFound, InvalidSongDuration
-from services.songs.schemas.song import SongCreateSchema, SongUpdateSchema
+from services.songs.schemas.song import SongCreateSchema, SongUpdateSchema, SongFullUpdateSchema
 from services.songs.schemas.filters import SongFilter
-from models import Song
-from services.albums.duration_calc import parse_song_length
+from services.albums.query_builder.album import AlbumQueryBuilder
+from models import Song, Album
+from services.albums.duration_calc import parse_song_length, calculate_album_duration
 
 
 class SongQueryBuilder:
@@ -84,8 +85,54 @@ class SongQueryBuilder:
             await SongQueryBuilder.validate_song_duration(data)
 
         song = await SongQueryBuilder.get_song_by_id(session, song_id)
+        old_album_id = song.album_id
         for key, value in data.model_dump(exclude_unset=True).items():
             setattr(song, key, value)
+        await session.flush()
+
+        # Updating album total_duration
+        album_id = song.album_id
+        if album_id:
+            new_album = await AlbumQueryBuilder.get_album_by_id(session, album_id)
+            durations = [s.duration for s in new_album.songs if s.duration]
+            total_duration = calculate_album_duration(durations)
+            new_album.total_duration = total_duration
+
+        if old_album_id and old_album_id != song.album_id:
+            old_album = await AlbumQueryBuilder.get_album_by_id(session, old_album_id)
+            durations = [s.duration for s in old_album.songs if s.duration]
+            total_duration = calculate_album_duration(durations)
+            old_album.total_duration = total_duration
+
+        await session.commit()
+        await session.refresh(song)
+        return song
+
+    @staticmethod
+    async def replace_song_by_id(session: AsyncSessionDep, song_id: int, data: SongFullUpdateSchema) -> Song:
+        await SongQueryBuilder.validate_song_duration(data)
+
+        song = await SongQueryBuilder.get_song_by_id(session, song_id)
+        old_album_id = song.album_id
+        for key, value in data.model_dump().items():
+            setattr(song, key, value)
+        await session.flush()
+
+        album_id = song.album_id
+
+        # Updates total_duration of the current album
+        new_album = await AlbumQueryBuilder.get_album_by_id(session, album_id)
+        durations = [s.duration for s in new_album.songs if s.duration]
+        total_duration = calculate_album_duration(durations)
+        new_album.total_duration = total_duration
+
+        # If album_id is changed, updates total_duration of the old album
+        if old_album_id and old_album_id != song.album_id:
+            old_album = await AlbumQueryBuilder.get_album_by_id(session, old_album_id)
+            durations = [s.duration for s in old_album.songs if s.duration]
+            total_duration = calculate_album_duration(durations)
+            old_album.total_duration = total_duration
+
         await session.commit()
         await session.refresh(song)
         return song

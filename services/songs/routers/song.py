@@ -7,7 +7,8 @@ from common.pagination import PaginationParams
 from models import User
 from services.songs.errors import SongWithNameAlreadyExists, SongNotFound, InvalidSongDuration
 from services.songs.query_builder.song import SongQueryBuilder
-from services.songs.schemas.song import SongListResponseSchema, SongResponseSchema, SongCreateSchema, SongUpdateSchema
+from services.songs.schemas.song import (SongListResponseSchema, SongResponseSchema, SongCreateSchema, SongUpdateSchema,
+                                         SongFullUpdateSchema)
 from services.songs.schemas.filters import SongFilter
 from services.users.modules.manager import current_active_user
 
@@ -79,3 +80,14 @@ async def update_song_by_id(session: AsyncSessionDep, song_id: int, data: SongUp
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except InvalidSongDuration as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@songs_router.put('/song_by_id/{id}', response_model=SongResponseSchema)
+async def replace_song_by_id(session: AsyncSessionDep, song_id: int, data: SongFullUpdateSchema,
+                            user: User = Depends(current_active_user)) -> SongResponseSchema:
+    try:
+        song = await SongQueryBuilder.replace_song_by_id(session, song_id, data)
+        print(f"User {user.email} has replaced a song")
+        return song
+    except SongNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

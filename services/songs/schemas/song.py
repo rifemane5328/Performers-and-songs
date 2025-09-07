@@ -42,6 +42,7 @@ class SongCreateSchema(SQLModel):
     title: str = Field(max_length=64)
     duration: str = Field(max_length=12)
     genre: SongTypeEnum = Field(max_length=32)
+
     performer_id: Optional[int] = None
     album_id: Optional[int] = None
 
@@ -51,5 +52,12 @@ class SongUpdateSchema(SQLModel):
     duration: Optional[str] = Field(default=None, max_length=12)
     genre: Optional[SongTypeEnum] = Field(default=None, max_length=32)
 
-    performer_id: Optional[int] = Field(default=None)
     album_id: Optional[int] = Field(default=None)
+
+
+class SongFullUpdateSchema(SQLModel):
+    title: str = Field(max_length=64)
+    duration: str = Field(max_length=12)
+    genre: SongTypeEnum = Field(max_length=32)
+
+    album_id: int
