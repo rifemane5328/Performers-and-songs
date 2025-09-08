@@ -11,7 +11,7 @@ from services.albums.errors import AlbumWithNameAlreadyExists, AlbumNotFound, Al
 from services.songs.errors import InvalidSongDuration
 from services.albums.schemas.album import AlbumCreateSchema, AlbumUpdateSchema, AlbumFullUpdateSchema
 from services.albums.schemas.filters import AlbumFilter
-from services.albums.duration_calc import calculate_album_duration, parse_song_length
+from common.duration_calc import calculate_album_duration, parse_song_length
 
 
 class AlbumQueryBuilder:

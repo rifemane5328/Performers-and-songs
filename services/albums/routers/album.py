@@ -23,7 +23,7 @@ async def get_albums(session: AsyncSessionDep,
                                                   Depends(PaginationParams)],
                      filters: AlbumFilter = Depends(),
                      user: User = Depends(current_active_user)) -> AlbumListResponseSchema:
-    """This returns a schema of all albums with their songs in the quantity, specified by pagination params"""
+    """Returns a paginated list of albums, including their songs, specified by pagination params"""
     try:
         albums = await AlbumQueryBuilder.get_albums(session, pagination_params, filters)
         print(f"User {user.email} has sent a request")
@@ -32,10 +32,10 @@ async def get_albums(session: AsyncSessionDep,
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@albums_router.post('/album', status_code=status.HTTP_201_CREATED)
+@albums_router.post('/albums', status_code=status.HTTP_201_CREATED)
 async def create_album(session: AsyncSessionDep, data: AlbumCreateSchema,
                        user: User = Depends(current_active_user)) -> AlbumResponseSchema:
-    """This gives user a schema of album to fill out and adds it to db, then returns it"""
+    """Creates a new album using the provided data and returns the created album"""
     try:
         await AlbumQueryBuilder.validate_album_songs_duration(data)
 
@@ -53,7 +53,7 @@ async def create_album(session: AsyncSessionDep, data: AlbumCreateSchema,
 @albums_router.get('/album_by_id/{id}', response_model=AlbumResponseSchema)
 async def get_album_by_id(session: AsyncSessionDep, album_id: int,
                           user: User = Depends(current_active_user)) -> AlbumResponseSchema:
-    """This returns a schema of album that have an id, defined by user"""
+    """Returns the album schema using the ID provided by the user"""
     try:
         album = await AlbumQueryBuilder.get_album_by_id(session, album_id)
         print(f"User {user.email} has sent a request")
@@ -62,10 +62,10 @@ async def get_album_by_id(session: AsyncSessionDep, album_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@albums_router.delete('/album_by_id/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@albums_router.delete('/albums/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_album_by_id(session: AsyncSessionDep, album_id: int,
                              user: User = Depends(current_active_user)) -> None:
-    """This deletes an album that have an id, defined by user"""
+    """Deleted an album with the ID, provided by the user"""
     try:
         await AlbumQueryBuilder.delete_album_by_id(session, album_id)
         print(f"User {user.email} has deleted an album")
@@ -73,11 +73,11 @@ async def delete_album_by_id(session: AsyncSessionDep, album_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@albums_router.patch('/album_by_id/{id}', response_model=AlbumResponseSchema)
+@albums_router.patch('/albums/{id}', response_model=AlbumResponseSchema)
 async def update_album_by_id(session: AsyncSessionDep, album_id: int,
                              data: AlbumUpdateSchema, user: User = Depends(current_active_user)) -> AlbumResponseSchema:
-    """This allows user to change those album's fields, which are left in the schema.
-    Missing fields remain untouched"""
+    """Updates only the field of the album, that are provided in the request.
+    Fields not included will remain unchanged"""
     try:
         album = await AlbumQueryBuilder.update_album_by_id(session, album_id, data)
         print(f"User {user.email} has updated an album")
@@ -86,10 +86,11 @@ async def update_album_by_id(session: AsyncSessionDep, album_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@albums_router.put('/album_by_id/{id}', response_model=AlbumResponseSchema)
+@albums_router.put('/albums/{id}', response_model=AlbumResponseSchema)
 async def replace_album_by_id(session: AsyncSessionDep, album_id: int,
                               data: AlbumFullUpdateSchema,
                               user: User = Depends(current_active_user)) -> AlbumResponseSchema:
+    """Replaces all fields of the album with the provided data"""
     try:
         album = await AlbumQueryBuilder.replace_album_by_id(session, album_id, data)
         print(f"User {user.email} has replaced an album")

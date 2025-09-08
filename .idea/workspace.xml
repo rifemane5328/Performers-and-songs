@@ -5,15 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c7ebaace-8747-4c43-bbfb-49e98d52c057" name="Changes" comment="feat: added put-methods for all tables&#10;&#10;feat(song): Added put methods for Performer, Album and Song;&#10;fix: Added updates for total_duration of album for both update endpoints(patch and put) when total_duration of song is updated;&#10;fix: Recalculate total_duration for both old and new albums if album_id changes&#10;feat(schemas): Added FullUpdate schemas for Performer, Album and Song; also deleted performer_id from both update schemas of the song(because user can not give song to another performer)">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/2a847310492f_set_pseudonym_to_unique.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/4ec14ae0c78f_created_3_tables.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/9a96977e10f0_fixed_singles_in_performer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/b6cd72596388_set_id_to_optional_and_changed_strings_.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/e8a699cc9bd6_deleted_nullable_from_performer_id.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/f5a5d1cc1312_added_genre_to_songs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/faf4f9fe71c9_changed_lists_correctly.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/songs/routers/song.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/songs/routers/song.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

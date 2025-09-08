@@ -14,7 +14,7 @@ from services.songs.errors import InvalidSongDuration
 from services.performers.schemas.performer import (PerformerCreateSchema, PerformerUpdateSchema,
                                                    PerformerFullUpdateSchema)
 from services.performers.schemas.filters import PerformerFilter
-from services.albums.duration_calc import calculate_album_duration, parse_song_length
+from common.duration_calc import calculate_album_duration, parse_song_length
 
 
 class PerformerQueryBuilder:

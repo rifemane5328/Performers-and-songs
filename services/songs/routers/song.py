@@ -22,7 +22,7 @@ async def get_songs(session: AsyncSessionDep,
                                                  Depends(PaginationParams)],
                     filters: SongFilter = Depends(),
                     user: User = Depends(current_active_user)) -> SongListResponseSchema:
-    """This returns a schema of all songs in the quantity, specified by pagination params"""
+    """Returns a paginated list of songs, as specified by the pagination params"""
     try:
         songs = await SongQueryBuilder.get_songs(session, pagination_params, filters)
         print(f"User {user.email} has sent a request")
@@ -31,10 +31,10 @@ async def get_songs(session: AsyncSessionDep,
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@songs_router.post('/song', status_code=status.HTTP_201_CREATED)
+@songs_router.post('/songs', status_code=status.HTTP_201_CREATED)
 async def create_song(session: AsyncSessionDep, data: SongCreateSchema,
                       user: User = Depends(current_active_user)) -> SongResponseSchema:
-    """This gives user a schema of song to fill out and adds it to db, then returns it"""
+    """Created a new song using the provided data and returns the created song"""
     try:
         song = await SongQueryBuilder.create_song(session, data)
         print(f"User {user.email} has created a new song")
@@ -48,7 +48,7 @@ async def create_song(session: AsyncSessionDep, data: SongCreateSchema,
 @songs_router.get('/song_by_id/{id}', response_model=SongResponseSchema)
 async def get_song_by_id(session: AsyncSessionDep, song_id: int,
                          user: User = Depends(current_active_user)) -> SongResponseSchema:
-    """This returns a schema of song that have an id, defined by user"""
+    """Returns the song schema using the ID provided by the user"""
     try:
         song = await SongQueryBuilder.get_song_by_id(session, song_id)
         print(f"User {user.email} has sent a request")
@@ -57,10 +57,10 @@ async def get_song_by_id(session: AsyncSessionDep, song_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@songs_router.delete('/song_by_id', status_code=status.HTTP_204_NO_CONTENT)
+@songs_router.delete('/songs/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_song_by_id(session: AsyncSessionDep, song_id: int,
                             user: User = Depends(current_active_user)) -> None:
-    """This deletes a song that have an id, defined by user"""
+    """Deleted a song with the ID, provided by the user"""
     try:
         await SongQueryBuilder.delete_song_by_id(session, song_id)
         print(f"User {user.email} has deleted an album")
@@ -68,10 +68,11 @@ async def delete_song_by_id(session: AsyncSessionDep, song_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@songs_router.patch('/song_by_id/{id}', response_model=SongResponseSchema)
+@songs_router.patch('/songs/{id}', response_model=SongResponseSchema)
 async def update_song_by_id(session: AsyncSessionDep, song_id: int, data: SongUpdateSchema,
                             user: User = Depends(current_active_user)) -> SongResponseSchema:
-    """This allows user to change those song's fields, which are left in the schema. Missing fields remain untouched"""
+    """Updates only the fields of the song, that are provided in the request.
+     Fields not included will remain untouched"""
     try:
         song = await SongQueryBuilder.update_song_by_id(session, song_id, data)
         print(f"User {user.email} has updated a song")
@@ -82,9 +83,10 @@ async def update_song_by_id(session: AsyncSessionDep, song_id: int, data: SongUp
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
-@songs_router.put('/song_by_id/{id}', response_model=SongResponseSchema)
+@songs_router.put('/songs/{id}', response_model=SongResponseSchema)
 async def replace_song_by_id(session: AsyncSessionDep, song_id: int, data: SongFullUpdateSchema,
-                            user: User = Depends(current_active_user)) -> SongResponseSchema:
+                             user: User = Depends(current_active_user)) -> SongResponseSchema:
+    """Replaces all fields of the song with the provided data"""
     try:
         song = await SongQueryBuilder.replace_song_by_id(session, song_id, data)
         print(f"User {user.email} has replaced a song")

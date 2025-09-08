@@ -9,8 +9,8 @@ from services.songs.errors import SongWithNameAlreadyExists, SongNotFound, Inval
 from services.songs.schemas.song import SongCreateSchema, SongUpdateSchema, SongFullUpdateSchema
 from services.songs.schemas.filters import SongFilter
 from services.albums.query_builder.album import AlbumQueryBuilder
-from models import Song, Album
-from services.albums.duration_calc import parse_song_length, calculate_album_duration
+from models import Song
+from common.duration_calc import parse_song_length, calculate_album_duration
 
 
 class SongQueryBuilder:

@@ -9,17 +9,6 @@ Supports all CRUD operations with filtering, pagination and authentication.
 - User authentication
 - Filtering by some basic parameters
 - Pagination support
-- 
-- ## Tech Stack
-
-- **Python 3.12** – Main programming language
-- **FastAPI** – For building the web API
-- **PostgreSQL** – For the database
-- **SQLModel** – For ORM and schema definitions
-- **Alembic** – For database migrations
-- **Pydantic** – For validation and serialization
-- **Uvicorn** – ASGI for running the app
-- **FastAPI Users** – Library for authentication and user management
 
 ## Tech Stack
 

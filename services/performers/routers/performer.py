@@ -23,8 +23,8 @@ async def get_performers(session: AsyncSessionDep,
                                                       Depends(PaginationParams)],
                          filters: PerformerFilter = Depends(),
                          user: User = Depends(current_active_user)) -> PerformerListResponseSchema:
-    """This returns a schema of all performers with albums and singles in the quantity,
-     specified by pagination params"""
+    """Returns a paginated list of performers, including their albums and singles, as specified by the
+    pagination params"""
     try:
         performers = await PerformerQueryBuilder.get_performers(session, pagination_params, filters)
         print(f"User {user.email} has sent a request")
@@ -33,10 +33,10 @@ async def get_performers(session: AsyncSessionDep,
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@performers_router.post('/performer', status_code=status.HTTP_201_CREATED)
+@performers_router.post('/performers', status_code=status.HTTP_201_CREATED)
 async def create_performer(session: AsyncSessionDep, data: PerformerCreateSchema,
                            user: User = Depends(current_active_user)) -> PerformerResponseSchema:
-    """This gives user a schema of performer to fill out and adds it to db, then returns it"""
+    """Creates a new performer using the provided data and returns the created performer"""
     try:
         performer = await PerformerQueryBuilder.create_performer(session, data)
 
@@ -55,7 +55,7 @@ async def create_performer(session: AsyncSessionDep, data: PerformerCreateSchema
 @performers_router.get('/performer_by_id/{id}', response_model=PerformerResponseSchema)
 async def get_performer_by_id(session: AsyncSessionDep, performer_id: int,
                               user: User = Depends(current_active_user)) -> PerformerResponseSchema:
-    """This returns a schema of performer that have an id, defined by user"""
+    """Returns the performer schema using the ID provided by the user"""
     try:
         performer = await PerformerQueryBuilder.get_performer_by_id(session, performer_id)
         print(f"User {user.email} has sent a request")
@@ -64,10 +64,10 @@ async def get_performer_by_id(session: AsyncSessionDep, performer_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@performers_router.delete('/performer_by_id/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@performers_router.delete('/performers/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_performer_by_id(session: AsyncSessionDep, performer_id: int,
                                  user: User = Depends(current_active_user)) -> None:
-    """This deletes a performer that have an id, defined by user"""
+    """Deletes a performer with the ID provided by the user"""
     try:
         await PerformerQueryBuilder.delete_performer_by_id(session, performer_id)
         print(f"User {user.email} has deleted a performer")
@@ -76,12 +76,12 @@ async def delete_performer_by_id(session: AsyncSessionDep, performer_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@performers_router.patch('/performer_by_id/{id}', response_model=PerformerResponseSchema)
+@performers_router.patch('/performers/{id}', response_model=PerformerResponseSchema)
 async def update_performer_by_id(session: AsyncSessionDep, performer_id: int,
                                  data: PerformerUpdateSchema,
                                  user: User = Depends(current_active_user)) -> PerformerResponseSchema:
-    """This allows user to change those performer's fields, which are left in the schema.
-     Missing fields remain untouched"""
+    """Updates only the fields of the performer, that are provided in the request.
+     Fields not included will remain unchanged"""
     try:
         performer = await PerformerQueryBuilder.update_performer_by_id(session, performer_id, data)
         print(f"User {user.email} has updated a song")
@@ -90,10 +90,11 @@ async def update_performer_by_id(session: AsyncSessionDep, performer_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@performers_router.put('/performer_by_id/{id}', response_model=PerformerResponseSchema)
+@performers_router.put('/performers/{id}', response_model=PerformerResponseSchema)
 async def replace_performer_by_id(session: AsyncSessionDep, performer_id: int,
                                   data: PerformerFullUpdateSchema,
                                   user: User = Depends(current_active_user)) -> PerformerResponseSchema:
+    """Replaces all fields of the performer with the provided data"""
     try:
         performer = await PerformerQueryBuilder.replace_performer_by_id(session, performer_id, data)
         print(f"User {user.email} has replaced a song")
