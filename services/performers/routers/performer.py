@@ -100,4 +100,4 @@ async def replace_performer_by_id(session: AsyncSessionDep, performer_id: int,
         print(f"User {user.email} has replaced a song")
         return performer
     except PerformerNotFound as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) #few5etr
