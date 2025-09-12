@@ -79,3 +79,6 @@ For example:
 ```
 uvicorn main:app --port 8001 --reload
 ```
+
+**That's everything you need to get the project up and running.  
+Good luck with testing and improving it!**
