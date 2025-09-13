@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
@@ -8,12 +9,17 @@ from services.albums.routers.album import albums_router
 from services.songs.routers.song import songs_router
 from services.users.routers.users import users_router
 
+logging.basicConfig(filename='logging.log', level=logging.DEBUG, filemode='w')
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info('Application startup.')
     database = Database(settings=Settings())
     yield
     await database.dispose(close=False)
+    logger.info('Application shutdown.')
 
 
 app = FastAPI(lifespan=lifespan)

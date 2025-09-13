@@ -58,12 +58,19 @@ class AlbumQueryBuilder:
         result = await session.execute(query)
         if result.scalar():
             raise AlbumWithNameAlreadyExists
-        songs = [Song(**song.model_dump()) for song in data.songs]
-        total_duration = calculate_album_duration([song.duration for song in songs])
 
         album = Album(**data.model_dump(exclude={'songs', 'total_duration'}),
-                      songs=songs,
-                      total_duration=total_duration)
+                      total_duration="0:00")
+
+        songs = []
+        for song_data in data.songs:
+            song = Song(**song_data.model_dump())
+            song.performer_id = album.performer_id
+            songs.append(song)
+
+        album.total_duration = calculate_album_duration([song.duration for song in songs])
+        album.songs = songs
+
         session.add(album)
         await session.commit()
         await session.refresh(album, attribute_names=['songs'])

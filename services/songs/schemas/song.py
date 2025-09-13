@@ -3,7 +3,7 @@ from typing import Optional, List
 from enum import Enum
 
 
-class SongTypeEnum(str, Enum):  # 18 genres
+class SongTypeEnum(str, Enum):  # 20 genres
     pop = "pop"
     relax = "relax"
     rock = "rock"
@@ -22,6 +22,8 @@ class SongTypeEnum(str, Enum):  # 18 genres
     soul = "soul"
     arabic = "arabic"
     hard_rock = "hard_rock"
+    dance = "dance"
+    country = "country"
 
 
 class SongResponseSchema(SQLModel):
