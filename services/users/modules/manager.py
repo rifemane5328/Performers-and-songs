@@ -16,13 +16,13 @@ class UserManager(BaseUserManager[User, int]):
     verification_token_secret = Settings().auth.verification_token_secret.get_secret_value()
 
     async def on_after_register(self, user, request: Optional[Request] = None):
-        logger.debug(f"User {User.email} successfully registered.")
+        logger.info(f"User {User.email} successfully registered.")
 
     async def on_after_forgot_password(self, user, token, request: Optional[Request] = None):
-        logger.debug(f"User {User.email} forgot password.Reset token: {token}.")
+        logger.info(f"User {User.email} forgot password.Reset token: {token}.")
 
     async def on_after_request_verify(self, user, token, request: Optional[Request] = None):
-        logger.debug(f"User {User.email} sent the verification request.Token: {token}.")
+        logger.info(f"User {User.email} sent the verification request.Token: {token}.")
 
     def parse_id(self, user_id):
         return int(user_id)

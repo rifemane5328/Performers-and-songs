@@ -29,7 +29,7 @@ async def get_albums(session: AsyncSessionDep,
     """Returns a paginated list of albums, including their songs, specified by the pagination params."""
     try:
         albums = await AlbumQueryBuilder.get_albums(session, pagination_params, filters)
-        logger.debug(f"User {user.email} has sent a request")
+        logger.info(f"User {user.email} has sent a request")
         return AlbumListResponseSchema(items=albums)
     except EmptyQueryResult:
         logger.warning("No albums found.")
@@ -44,7 +44,7 @@ async def create_album(session: AsyncSessionDep, data: AlbumCreateSchema,
         await AlbumQueryBuilder.validate_album_songs_duration(data)
 
         album = await AlbumQueryBuilder.create_album(session, data)
-        logger.debug(f"User {user.email} has created a new album")
+        logger.info(f"User {user.email} has created a new album")
         return AlbumResponseSchema.model_validate(album)
     except AlbumWithNameAlreadyExists as e:
         logger.warning("Album with given name already exists.")
@@ -63,7 +63,7 @@ async def get_album_by_id(session: AsyncSessionDep, album_id: int,
     """Returns the album schema using the ID provided by the user."""
     try:
         album = await AlbumQueryBuilder.get_album_by_id(session, album_id)
-        logger.debug(f"User {user.email} has sent a request")
+        logger.info(f"User {user.email} has sent a request")
         return album
     except AlbumNotFound as e:
         logger.error(f"Song with an id {album_id} not found.")
@@ -76,7 +76,7 @@ async def delete_album_by_id(session: AsyncSessionDep, album_id: int,
     """Deleted an album with the ID, provided by the user."""
     try:
         await AlbumQueryBuilder.delete_album_by_id(session, album_id)
-        logger.debug(f"User {user.email} has successfully deleted an album.")
+        logger.info(f"User {user.email} has successfully deleted an album.")
     except AlbumNotFound as e:
         logger.error(f"Song with an id {album_id} not found.")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
@@ -89,7 +89,7 @@ async def update_album_by_id(session: AsyncSessionDep, album_id: int,
     Fields not included will remain unchanged."""
     try:
         album = await AlbumQueryBuilder.update_album_by_id(session, album_id, data)
-        logger.debug(f"User {user.email} has successfully updated an album.")
+        logger.info(f"User {user.email} has successfully updated an album.")
         return album
     except AlbumNotFound as e:
         logger.error(f"Song with an id {album_id} not found.")
@@ -103,7 +103,7 @@ async def replace_album_by_id(session: AsyncSessionDep, album_id: int,
     """Replaces all fields of the album with the provided data."""
     try:
         album = await AlbumQueryBuilder.replace_album_by_id(session, album_id, data)
-        logger.debug(f"User {user.email} has successfully replaced an album.")
+        logger.info(f"User {user.email} has successfully replaced an album.")
         return album
     except AlbumNotFound as e:
         logger.error(f"Song with an id {album_id} not found.")
